@@ -21,6 +21,7 @@ void deleteRecord(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
+    (void)argc;          // suppress unused parameter warning
     FILE *cfPtr;         // credit.dat file pointer
     unsigned int choice; // user's choice
 
@@ -107,7 +108,7 @@ void updateRecord(FILE *fPtr)
 
     // obtain number of account to update
     printf("%s", "Enter account to update ( 1 - 100 ): ");
-    scanf("%d", &account);
+    scanf("%u", &account);
 
     // move file pointer to correct record in file
     fseek(fPtr, (account - 1) * sizeof(struct clientData), SEEK_SET);
@@ -131,7 +132,7 @@ void updateRecord(FILE *fPtr)
 
         // move file pointer to correct record in file
         // move back by 1 record length
-        fseek(fPtr, -sizeof(struct clientData), SEEK_CUR);
+        fseek(fPtr, -(long)sizeof(struct clientData), SEEK_CUR);
         // write updated record over old record in file
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
     } // end else
@@ -146,7 +147,7 @@ void deleteRecord(FILE *fPtr)
 
     // obtain number of account to delete
     printf("%s", "Enter account number to delete ( 1 - 100 ): ");
-    scanf("%d", &accountNum);
+    scanf("%u", &accountNum);
 
     // move file pointer to correct record in file
     fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
@@ -175,7 +176,7 @@ void newRecord(FILE *fPtr)
 
     // obtain number of account to create
     printf("%s", "Enter new account number ( 1 - 100 ): ");
-    scanf("%d", &accountNum);
+    scanf("%u", &accountNum);
 
     // move file pointer to correct record in file
     fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
