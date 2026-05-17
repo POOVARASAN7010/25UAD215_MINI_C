@@ -94,6 +94,7 @@ void textFile(FILE *readPtr)
     {
         rewind(readPtr); // sets pointer to beginning of file
         fprintf(writePtr, "%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
+        printf("\n%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
 
         // copy all records from random-access file into text file
         while (!feof(readPtr))
@@ -105,10 +106,13 @@ void textFile(FILE *readPtr)
             {
                 fprintf(writePtr, "%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName,
                         client.balance);
+                printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName,
+                        client.balance);
             } // end if
         }     // end while
 
         fclose(writePtr); // fclose closes the file
+        printf("\nAccounts successfully exported to \"accounts.txt\"\n");
     }                     // end else
 } // end function textFile
 
