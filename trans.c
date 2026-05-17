@@ -155,6 +155,7 @@ void updateRecord(FILE *fPtr)
         fseek(fPtr, -(long)sizeof(struct clientData), SEEK_CUR);
         // write updated record over old record in file
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
+        printf("Account successfully updated.\n");
     } // end else
 } // end function updateRecord
 
@@ -190,6 +191,7 @@ void deleteRecord(FILE *fPtr)
         fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
         // replace existing record with blank record
         fwrite(&blankClient, sizeof(struct clientData), 1, fPtr);
+        printf("Account successfully deleted.\n");
     } // end else
 } // end function deleteRecord
 
@@ -230,13 +232,14 @@ void newRecord(FILE *fPtr)
         fseek(fPtr, (client.acctNum - 1) * sizeof(struct clientData), SEEK_SET);
         // insert record in file
         fwrite(&client, sizeof(struct clientData), 1, fPtr);
+        printf("Account successfully created.\n");
     } // end else
 } // end function newRecord
 
 // enable user to input menu choice
 unsigned int enterChoice(void)
 {
-    unsigned int menuChoice; // variable to store user's choice
+    unsigned int menuChoice = 0; // variable to store user's choice
     // display available options
     printf("%s", "\nEnter your choice\n"
                  "1 - store a formatted text file of accounts called\n"
@@ -246,6 +249,11 @@ unsigned int enterChoice(void)
                  "4 - delete an account\n"
                  "5 - end program\n? ");
 
-    scanf("%u", &menuChoice); // receive choice from user
+    if (scanf("%u", &menuChoice) != 1)
+    {
+        // clear input buffer if user entered non-numeric data
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
     return menuChoice;
 } // end function enterChoice
