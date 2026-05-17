@@ -25,11 +25,25 @@ int main(int argc, char *argv[])
     FILE *cfPtr;         // credit.dat file pointer
     unsigned int choice; // user's choice
 
-    // fopen opens the file; exits if file cannot be opened
+    // fopen opens the file; attempts to create it if it cannot be opened
     if ((cfPtr = fopen("credit.dat", "rb+")) == NULL)
     {
-        printf("%s: File could not be opened.\n", argv[0]);
-        exit(-1);
+        // try to create the file
+        if ((cfPtr = fopen("credit.dat", "wb+")) == NULL)
+        {
+            printf("%s: File could not be opened.\n", argv[0]);
+            exit(-1);
+        }
+        else
+        {
+            // initialize file with 100 blank records
+            struct clientData blankClient = {0, "", "", 0.0};
+            for (unsigned int i = 1; i <= 100; ++i)
+            {
+                fwrite(&blankClient, sizeof(struct clientData), 1, cfPtr);
+            }
+            rewind(cfPtr); // reset pointer to beginning of file
+        }
     }
 
     // enable user to specify action
