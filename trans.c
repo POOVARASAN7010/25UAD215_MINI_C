@@ -18,6 +18,7 @@ void textFile(FILE *readPtr);
 void updateRecord(FILE *fPtr);
 void newRecord(FILE *fPtr);
 void deleteRecord(FILE *fPtr);
+void searchRecord(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +48,7 @@ int main(int argc, char *argv[])
     }
 
     // enable user to specify action
-    while ((choice = enterChoice()) != 5)
+    while ((choice = enterChoice()) != 6)
     {
         switch (choice)
         {
@@ -66,6 +67,10 @@ int main(int argc, char *argv[])
         // delete existing record
         case 4:
             deleteRecord(cfPtr);
+            break;
+        // search for a record
+        case 5:
+            searchRecord(cfPtr);
             break;
         // display if user does not select valid choice
         default:
@@ -263,6 +268,43 @@ void newRecord(FILE *fPtr)
     } // end else
 } // end function newRecord
 
+// search for an existing record
+void searchRecord(FILE *fPtr)
+{
+    unsigned int accountNum; // account number
+    struct clientData client = {0, "", "", 0.0}; // default client
+
+    // obtain number of account to search
+    printf("%s", "Enter account number to search ( 1 - 100 ): ");
+    scanf("%u", &accountNum);
+    
+    // clear input buffer
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    if (accountNum < 1 || accountNum > 100)
+    {
+        printf("Invalid account number. It must be between 1 and 100.\n");
+        return;
+    }
+
+    // move file pointer to correct record in file
+    fseek(fPtr, (accountNum - 1) * sizeof(struct clientData), SEEK_SET);
+    // read record from file
+    fread(&client, sizeof(struct clientData), 1, fPtr);
+    
+    // display error if record does not exist
+    if (client.acctNum == 0)
+    {
+        printf("Account %d does not exist.\n", accountNum);
+    }
+    else
+    {
+        printf("\n%-6s%-16s%-11s%10s\n", "Acct", "Last Name", "First Name", "Balance");
+        printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
+    }
+} // end function searchRecord
+
 // enable user to input menu choice
 unsigned int enterChoice(void)
 {
@@ -274,7 +316,8 @@ unsigned int enterChoice(void)
                  "2 - update an account\n"
                  "3 - add a new account\n"
                  "4 - delete an account\n"
-                 "5 - end program\n? ");
+                 "5 - search for an account\n"
+                 "6 - end program\n? ");
 
     if (scanf("%u", &menuChoice) != 1)
     {
