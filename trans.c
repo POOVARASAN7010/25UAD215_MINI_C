@@ -19,6 +19,7 @@ void updateRecord(FILE *fPtr);
 void newRecord(FILE *fPtr);
 void deleteRecord(FILE *fPtr);
 void searchRecord(FILE *fPtr);
+void calculateTotalBalance(FILE *fPtr);
 
 int main(int argc, char *argv[])
 {
@@ -48,7 +49,7 @@ int main(int argc, char *argv[])
     }
 
     // enable user to specify action
-    while ((choice = enterChoice()) != 6)
+    while ((choice = enterChoice()) != 7)
     {
         switch (choice)
         {
@@ -71,6 +72,10 @@ int main(int argc, char *argv[])
         // search for a record
         case 5:
             searchRecord(cfPtr);
+            break;
+        // calculate total balance
+        case 6:
+            calculateTotalBalance(cfPtr);
             break;
         // display if user does not select valid choice
         default:
@@ -305,6 +310,33 @@ void searchRecord(FILE *fPtr)
     }
 } // end function searchRecord
 
+// calculate and print the total balance of all active accounts
+void calculateTotalBalance(FILE *fPtr)
+{
+    struct clientData client;
+    double totalBalance = 0.0;
+    int activeAccounts = 0;
+
+    rewind(fPtr); // start from beginning of file
+
+    // read through the entire file
+    while (!feof(fPtr))
+    {
+        int result = fread(&client, sizeof(struct clientData), 1, fPtr);
+
+        // if account is active, add to total
+        if (result != 0 && client.acctNum != 0)
+        {
+            totalBalance += client.balance;
+            activeAccounts++;
+        }
+    }
+
+    printf("\n--- Bank Summary ---\n");
+    printf("Total Active Accounts: %d\n", activeAccounts);
+    printf("Total Bank Balance: %.2f\n\n", totalBalance);
+} // end function calculateTotalBalance
+
 // enable user to input menu choice
 unsigned int enterChoice(void)
 {
@@ -317,7 +349,8 @@ unsigned int enterChoice(void)
                  "3 - add a new account\n"
                  "4 - delete an account\n"
                  "5 - search for an account\n"
-                 "6 - end program\n? ");
+                 "6 - calculate total bank balance\n"
+                 "7 - end program\n? ");
 
     if (scanf("%u", &menuChoice) != 1)
     {
