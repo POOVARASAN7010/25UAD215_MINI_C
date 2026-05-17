@@ -152,6 +152,10 @@ void updateRecord(FILE *fPtr)
         scanf("%lf", &transaction);
         client.balance += transaction; // update record balance
 
+        // clear input buffer
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+
         printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
         // move file pointer to correct record in file
@@ -230,6 +234,10 @@ void newRecord(FILE *fPtr)
         // user enters last name, first name and balance
         printf("%s", "Enter lastname, firstname, balance\n? ");
         scanf("%14s%9s%lf", client.lastName, client.firstName, &client.balance);
+        
+        // clear input buffer in case user entered too many characters
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
 
         client.acctNum = accountNum;
         // move file pointer to correct record in file
@@ -246,8 +254,8 @@ unsigned int enterChoice(void)
     unsigned int menuChoice = 0; // variable to store user's choice
     // display available options
     printf("%s", "\nEnter your choice\n"
-                 "1 - store a formatted text file of accounts called\n"
-                 "    \"accounts.txt\" for printing\n"
+                 "1 - print all accounts to screen and save to\n"
+                 "    \"accounts.txt\" for backup\n"
                  "2 - update an account\n"
                  "3 - add a new account\n"
                  "4 - delete an account\n"
