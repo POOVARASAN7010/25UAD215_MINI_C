@@ -136,7 +136,10 @@ void updateRecord(FILE *fPtr)
 
     // obtain number of account to update
     printf("%s", "Enter account to update ( 1 - 100 ): ");
-    scanf("%u", &account);
+    if (scanf("%u", &account) != 1) {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
 
     if (account < 1 || account > 100)
     {
@@ -157,14 +160,39 @@ void updateRecord(FILE *fPtr)
     { // update record
         printf("%-6d%-16s%-11s%10.2f\n\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
-        // request transaction amount from user
-        printf("%s", "Enter charge ( + ) or payment ( - ): ");
-        scanf("%lf", &transaction);
-        client.balance += transaction; // update record balance
+        int updateChoice = 0;
+        printf("\n1 - Update Balance\n");
+        printf("2 - Update Name\n");
+        printf("Enter choice: ");
+        scanf("%d", &updateChoice);
 
         // clear input buffer
         int c;
         while ((c = getchar()) != '\n' && c != EOF);
+
+        if (updateChoice == 1)
+        {
+            // request transaction amount from user
+            printf("%s", "Enter charge ( + ) or payment ( - ): ");
+            scanf("%lf", &transaction);
+            client.balance += transaction; // update record balance
+
+            // clear input buffer
+            while ((c = getchar()) != '\n' && c != EOF);
+        }
+        else if (updateChoice == 2)
+        {
+            printf("Enter new lastname, firstname\n? ");
+            scanf("%14s%9s", client.lastName, client.firstName);
+
+            // clear input buffer
+            while ((c = getchar()) != '\n' && c != EOF);
+        }
+        else
+        {
+            printf("Invalid choice. Update cancelled.\n");
+            return;
+        }
 
         printf("%-6d%-16s%-11s%10.2f\n", client.acctNum, client.lastName, client.firstName, client.balance);
 
@@ -186,7 +214,10 @@ void deleteRecord(FILE *fPtr)
 
     // obtain number of account to delete
     printf("%s", "Enter account number to delete ( 1 - 100 ): ");
-    scanf("%u", &accountNum);
+    if (scanf("%u", &accountNum) != 1) {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
 
     if (accountNum < 1 || accountNum > 100)
     {
@@ -237,7 +268,10 @@ void newRecord(FILE *fPtr)
 
     // obtain number of account to create
     printf("%s", "Enter new account number ( 1 - 100 ): ");
-    scanf("%u", &accountNum);
+    if (scanf("%u", &accountNum) != 1) {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
 
     if (accountNum < 1 || accountNum > 100)
     {
@@ -281,11 +315,15 @@ void searchRecord(FILE *fPtr)
 
     // obtain number of account to search
     printf("%s", "Enter account number to search ( 1 - 100 ): ");
-    scanf("%u", &accountNum);
-    
-    // clear input buffer
-    int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    if (scanf("%u", &accountNum) != 1) {
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
+    else {
+        // clear input buffer if it successfully parsed an int, just to be safe
+        int c;
+        while ((c = getchar()) != '\n' && c != EOF);
+    }
 
     if (accountNum < 1 || accountNum > 100)
     {
